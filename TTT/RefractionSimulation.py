@@ -29,6 +29,14 @@ COL_INSIDE_LEFT = (255, 100, 100)
 COL_AIR_RIGHT = (60, 250, 220)
 COL_INSIDE_RIGHT = (100, 160, 255)
 
+# ---------------- Grid Config ----------------
+GRID_SIZE = 30   # 每个格子尺寸，你可改成 20 / 40 / 60 等
+GRID_COLS = WIDTH // GRID_SIZE
+GRID_ROWS = HEIGHT // GRID_SIZE
+
+# 亮格子布尔表：True=光线走过
+grid_lit = [[False for _ in range(GRID_ROWS)] for _ in range(GRID_COLS)]
+
 # ---------------- Vector utilities ----------------
 def v_add(a, b): return (a[0] + b[0], a[1] + b[1])
 def v_sub(a, b): return (a[0] - b[0], a[1] - b[1])
@@ -276,8 +284,53 @@ def safe_draw_circle(surface, color, point, radius):
         except:
             pass
 
+def mark_segment_on_grid(a, b):
+    """将线段经过的格子设为 True"""
+    x1, y1 = a; x2, y2 = b
+
+    # 保证顺序
+    if x1 > x2:
+        x1, x2 = x2, x1
+        y1, y2 = y2, y1
+
+    # 包围盒 → 降低计算量
+    min_c = max(0, int(min(x1, x2) // GRID_SIZE))
+    max_c = min(GRID_COLS - 1, int(max(x1, x2) // GRID_SIZE))
+    min_r = max(0, int(min(y1, y2) // GRID_SIZE))
+    max_r = min(GRID_ROWS - 1, int(max(y1, y2) // GRID_SIZE))
+
+    # 对范围内格子检测线段是否穿过（中心点投影法）
+    for cx in range(min_c, max_c + 1):
+        for cy in range(min_r, max_r + 1):
+            gx = cx * GRID_SIZE + GRID_SIZE * 0.5
+            gy = cy * GRID_SIZE + GRID_SIZE * 0.5
+
+            # 判断点(gx,gy)到线段的最小距离
+            # 若 < GRID_SIZE/2 即认为光线经过该格子
+            px, py = gx, gy
+            vx, vy = x2 - x1, y2 - y1
+            wx, wy = px - x1, py - y1
+            L2 = vx * vx + vy * vy
+            if L2 < 1e-12:
+                continue
+            t = max(0.0, min(1.0, (wx * vx + wy * vy) / L2))
+            projx = x1 + vx * t
+            projy = y1 + vy * t
+            dx = px - projx; dy = py - projy
+            if dx * dx + dy * dy <= (GRID_SIZE * 0.48) ** 2:
+                grid_lit[cx][cy] = True
+
 def draw_scene(screen, shapes, all_rays):
     screen.fill(BG)
+    # --------- 绘制网格背景：亮格子白、暗格子黑 ----------
+    for cx in range(GRID_COLS):
+        for cy in range(GRID_ROWS):
+            color = (255, 255, 255) if grid_lit[cx][cy] else (0, 0, 0)
+            pygame.draw.rect(
+                screen, color,
+                pygame.Rect(cx * GRID_SIZE, cy * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+            )
+
     alpha_surf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     for sh in shapes:
         pygame.draw.polygon(alpha_surf, COL_FILL, sh["poly"])
@@ -356,7 +409,14 @@ def main():
                     direction = (1.0, 0.0)
                 else:
                     direction = (-1.0, 0.0)
-                all_rays.append(trace_ray((sx, sy), direction, shapes))
+                rays = trace_ray((sx, sy), direction, shapes)
+                all_rays.append(rays)
+
+                # === 新增：标记所有格子 ===
+                for a, b, _inside in rays:
+                    if is_valid_point(a) and is_valid_point(b):
+                        mark_segment_on_grid(a, b)
+
             recompute = False
 
         draw_scene(screen, shapes, all_rays)
