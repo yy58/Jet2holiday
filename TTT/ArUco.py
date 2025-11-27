@@ -12,7 +12,7 @@ def get_yaw_from_rvec(rvec):
 
 
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
     params = np.load("camera_params.npz")
     camera_matrix = params["camera_matrix"]

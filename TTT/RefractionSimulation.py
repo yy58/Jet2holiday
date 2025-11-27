@@ -19,18 +19,19 @@ EPS = 1e-8
 TINY = 1e-4
 SAFE_INF = 1e18
 
-# Colors
+# ---------------- Colors ----------------
 BG = (18, 18, 28)
 COL_FILL = (80, 120, 160, 70)
 COL_SQ_EDGE = (220, 220, 220)
 COL_TRI_EDGE = (255, 200, 120)
+# Refraction colors
 COL_AIR_LEFT = (255, 220, 60)
 COL_INSIDE_LEFT = (255, 100, 100)
 COL_AIR_RIGHT = (60, 250, 220)
 COL_INSIDE_RIGHT = (100, 160, 255)
 # Fresnel reflection colors
-COL_REFLECT_LEFT = (255, 180, 0)      # 左侧光线的反射光（亮橙）
-COL_REFLECT_RIGHT = (0, 180, 255)     # 右侧光线的反射光（亮蓝）
+COL_REFLECT_LEFT = (255, 0, 255)
+COL_REFLECT_RIGHT = (0, 0, 255)
 
 # ---------------- Grid Config ----------------
 GRID_SIZE = 30   # 每个格子尺寸，你可改成 20 / 40 / 60 等
@@ -299,7 +300,6 @@ def safe_draw_circle(surface, color, point, radius):
             pass
 
 def mark_segment_on_grid(a, b):
-    """将线段经过的格子设为 True"""
     x1, y1 = a; x2, y2 = b
 
     # 保证顺序
@@ -440,7 +440,6 @@ def main():
                         continue
 
                     a, b, inside = seg[:3]    # 自动裁剪为 3 个值
-
                     if is_valid_point(a) and is_valid_point(b):
                         mark_segment_on_grid(a, b)
 
