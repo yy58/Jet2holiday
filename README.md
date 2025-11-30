@@ -84,7 +84,6 @@ Below are the full technical architectures for the system, integrated into the c
 
 #  System Architecture
 
----
                    ┌──────────────────────────┐
                    │      Prism Setup          │
                    │ (refraction / reflection) │
@@ -123,6 +122,7 @@ Below are the full technical architectures for the system, integrated into the c
 │     - Renders binary matrices into evolving glyphs          │
 │     - Arecibo-inspired layout                               │
 └────────────────────────────────────────────────────────────┘
+
 
 ---
 
