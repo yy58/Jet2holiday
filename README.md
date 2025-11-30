@@ -83,8 +83,6 @@ Below are the full technical architectures for the system, integrated into the c
 ---
 
 #  System Architecture
-
-```text
                    ┌──────────────────────────┐
                    │      Prism Setup          │
                    │ (refraction / reflection) │
@@ -124,15 +122,9 @@ Below are the full technical architectures for the system, integrated into the c
 │     - Arecibo-inspired layout                               │
 └────────────────────────────────────────────────────────────┘
 
-
----
-
-
-##  Sound Engine (Max/MSP)
-
+#  Sound Engine (Max/MSP)
 
 The Max patch translates real-time OSC light data into a multilayer sonic texture.
-
 
                 ┌──────────────┐
                 │ LIGHT FILTER  │ ← hue/intensity
@@ -149,4 +141,3 @@ The Max patch translates real-time OSC light data into a multilayer sonic textur
       ┌───────────────────────────────────┐
       │  AMBIENT DELAY NETWORK + REVERB   │ ← x-modulated delay time
       └───────────────────────────────────┘
-
