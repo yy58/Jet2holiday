@@ -84,19 +84,19 @@ Below are the full technical architectures for the system, integrated into the c
 
 #  System Architecture
 
-
+```text
                    ┌──────────────────────────┐
                    │      Prism Setup          │
-                   │ (refraction/reflection) │
+                   │ (refraction / reflection) │
                    └──────────────┬───────────┘
                                   │ light beam
                                   ▼
 ┌───────────────────────────────────────────────────────────┐
 │                   1. CAMERA CAPTURE                        │
-│   - Tracks the light spot                                       │
+│   - Tracks light spot                                       │
 │   - Extracts: x,y | hue | intensity | velocity              │
 └───────────────┬────────────────────────────────────────────┘
-                │ OpenCV / cv. jit/jit. grab
+                │ OpenCV / cv.jit / jit.grab
                 ▼
 ┌────────────────────────────────────────────────────────────┐
 │           2. BINARY MATRIX ENCODER (Python)                 │
