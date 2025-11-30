@@ -83,6 +83,8 @@ Below are the full technical architectures for the system, integrated into the c
 ---
 
 #  System Architecture
+
+---
                    ┌──────────────────────────┐
                    │      Prism Setup          │
                    │ (refraction / reflection) │
