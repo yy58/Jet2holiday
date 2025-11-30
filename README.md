@@ -84,46 +84,22 @@ Below are the full technical architectures for the system, integrated into the c
 
 #  System Architecture
 
-                   ┌──────────────────────────┐
-                   │      Prism Setup          │
-                   │ (refraction / reflection) │
-                   └──────────────┬───────────┘
-                                  │ light beam
-                                  ▼
-┌───────────────────────────────────────────────────────────┐
-│                   1. CAMERA CAPTURE                        │
-│   - Tracks light spot                                       │
-│   - Extracts: x,y | hue | intensity | velocity              │
-└───────────────┬────────────────────────────────────────────┘
-                │ OpenCV / cv.jit / jit.grab
-                ▼
-┌────────────────────────────────────────────────────────────┐
-│           2. BINARY MATRIX ENCODER (Python)                 │
-│   - Pixel grid (73×23 or custom)                            │
-│   - Light-touched cells → 1                                 │
-│   - Untouched cells → 0                                     │
-│   - Generates dynamic arrays & bitstreams                   │
-└───────────────┬────────────────────────────────────────────┘
-                │ numpy → OSC → Max
-                ▼
-┌────────────────────────────────────────────────────────────┐
-│         3. SOUND ENGINE (Max/MSP)                           │
-│   - Amplitude / Timbre from intensity & hue                 │
-│   - Melody from x-position                                  │
-│   - Rhythm from velocity                                    │
-│   - Harmony from reflection loops                           │
-│   - Granular layer                                          │
-│   - Ambient delay network + reverb                          │
-└───────────────┬────────────────────────────────────────────┘
-                │ audio out
-                ▼
-┌────────────────────────────────────────────────────────────┐
-│           4. PIXEL VISUALIZER (Python/Processing)           │
-│     - Renders binary matrices into evolving glyphs          │
-│     - Arecibo-inspired layout                               │
-└────────────────────────────────────────────────────────────┘
 
+### 1. Prism Setup
+- Participants manipulate prisms to refract and reflect a light beam.
+- Light beam acts as the medium for encoding information.
 
+### 2. Camera Capture
+- Tracks the position of the light spot in real-time.
+- Extracts properties: `x`, `y`, `hue`, `intensity`, `velocity`.
+- Implemented with: `OpenCV`, `cv.jit`, `jit.grab`.
+
+### 3. Binary Matrix Encoder (Python)
+- Converts light paths into a binary pixel grid (default: 73×23, customizable).
+- Light-touched cells → `1`.
+- Untouched cells → `0`.
+- Generates dynamic arrays and bitstreams.
+- Data sent via `numpy → OSC → Max/MSP`.
 ---
 
 #  Sound Engine (Max/MSP)
